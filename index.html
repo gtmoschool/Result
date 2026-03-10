@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MADRASATHUL FALAH RESULT 2026</title>
+
+<style>
+
+body{
+font-family:Cambria, serif;
+text-align:center;
+background:#E0F7FA;
+}
+
+.container{
+max-width:420px;
+margin:auto;
+background:white;
+padding:20px;
+border-radius:10px;
+border:2px solid #007BFF;
+}
+
+input,select{
+width:95%;
+padding:10px;
+margin:10px 0;
+border:1px solid #007BFF;
+border-radius:5px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#007BFF;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.result{
+margin-top:20px;
+display:none;
+text-align:left;
+border:1px solid #007BFF;
+padding:15px;
+border-radius:5px;
+}
+
+.pass{color:green;font-weight:bold;}
+.fail{color:red;font-weight:bold;}
+
+.pass-subject{color:green;}
+.fail-subject{color:red;}
+
+table{
+width:100%;
+margin-top:10px;
+border-collapse:collapse;
+}
+
+td{
+padding:6px;
+border-bottom:1px solid #ddd;
+}
+
+td:last-child{
+text-align:right;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>MADRASATHUL FALAH RESULT</h2>
+
+<input type="text" id="regNo" placeholder="ENTER UID NUMBER">
+
+<select id="classSelect">
+<option value="">SELECT CLASS</option>
+<option value="1">CLASS 1</option>
+<option value="2">CLASS 2</option>
+<option value="3">CLASS 3</option>
+<option value="4">CLASS 4</option>
+</select>
+
+<button onclick="fetchResult()">SEARCH RESULT</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<script>
+
+const studentResults = {
+
+"F09316001":{name:"MUHAMMED SHADHIL",class:"1",subjects:{"Thafheem Reading":7,"Thafheem Writing":8,"Duroos Reading":8,"Duroos Writing":9,"Dictation":6,"Dheeniyath":30}},
+"F09316005":{name:"MUHAMMED RIHAN",class:"1",subjects:{"Thafheem Reading":4,"Thafheem Writing":16,"Duroos Reading":18,"Duroos Writing":8,"Dictation":0,"Dheeniyath":50}},
+"F09316007":{name:"MUHAMMD EHAAN",class:"1",subjects:{"Thafheem Reading":46,"Thafheem Writing":47,"Duroos Reading":38,"Duroos Writing":31,"Dictation":23,"Dheeniyath":40}},
+"E09316005":{name:"ANSHA ARIF",class:"1",subjects:{"Thafheem Reading":50,"Thafheem Writing":48,"Duroos Reading":50,"Duroos Writing":43,"Dictation":43,"Dheeniyath":50}},
+"F09316002":{name:"ALEEZA AZAM",class:"1",subjects:{"Thafheem Reading":11,"Thafheem Writing":31,"Duroos Reading":25,"Duroos Writing":28,"Dictation":16,"Dheeniyath":50}},
+"F09316003":{name:"AFRIN",class:"1",subjects:{"Thafheem Reading":42,"Thafheem Writing":38,"Duroos Reading":38,"Duroos Writing":36,"Dictation":35,"Dheeniyath":50}},
+"F09316006":{name:"ALAINA",class:"1",subjects:{"Thafheem Reading":46,"Thafheem Writing":36,"Duroos Reading":48,"Duroos Writing":40,"Dictation":42,"Dheeniyath":50}},
+"A09316002":{name:"AKBAR ALI",class:"2",subjects:{"Quran":18,"Hifl":25,Fiqh:18,"Aqeeda":18,"Duroos":20,"Lisan":18}},
+"C09316002":{name:"AJSAL RAHMAN",class:"2",subjects:{"Quran":10,"Hifl":10,Fiqh:11,"Aqeeda":5,"Duroos":23,"Lisan":15}},
+"C09316007":{name:"MUHAMMED SHARIF",class:"2",subjects:{"Quran":30,"Hifl":28,Fiqh:27,"Aqeeda":23,"Duroos":25,"Lisan":27}},
+"C09316008":{name:"DILSHAD",class:"2",subjects:{"Quran":18,"Hifl":18,Fiqh:19,"Aqeeda":18,"Duroos":18,"Lisan":18}},
+"D05667010":{name:"SHAHIR",class:"2",subjects:{"Quran":18,"Hifl":20,Fiqh:30,"Aqeeda":20,"Duroos":23,"Lisan":18}},
+"E09316002":{name:"ABDUL AZEEEM SYED MUHAMMED",class:"2",subjects:{"Quran":48,"Hifl":45,Fiqh:44,"Aqeeda":46,"Duroos":48,"Lisan":48}},
+"E09316004":{name:"MUHAMMED RISHAN",class:"2",subjects:{"Quran":40,"Hifl":48,Fiqh:44,"Aqeeda":46,"Duroos":47,"Lisan":49}},
+"E09316006":{name:"MUHAMMED SHAMMAS",class:"2",subjects:{"Quran":30,"Hifl":39,Fiqh:45,"Aqeeda":30,"Duroos":28,"Lisan":35}},
+"C09316001":{name:"ALIYA FATHIMA",class:"2",subjects:{"Quran":15,"Hifl":20,Fiqh:16,"Aqeeda":7,"Duroos":18,"Lisan":12}},
+"E09316001":{name:"ISHA MEHRIN",class:"2",subjects:{"Quran":25,"Hifl":25,Fiqh:18,"Aqeeda":41,"Duroos":24,"Lisan":37}},
+"A09316004":{name:"SAHAL S",class:"3",subjects:{"Quran":18,"Hifl":18,Fiqh:18,"Aqeeda":18,"Tharikh":18,"Duroos":18,"Lisan":18}},
+"B09316002":{name:"AJMAL AHMMED",class:"3",subjects:{"Quran":18,"Hifl":18,Fiqh:29,"Aqeeda":26,"Tharikh":23,"Duroos":2,"Lisan":2}},
+"B09316010":{name:"IFRAH",class:"3",subjects:{"Quran":33,"Hifl":32,Fiqh:22,"Aqeeda":28,"Tharikh":18,"Duroos":28,"Lisan":18}},
+"D09316001":{name:"AYRA",class:"3",subjects:{"Quran":45,"Hifl":45,Fiqh:46,"Aqeeda":49,"Tharikh":34,"Duroos":49,"Lisan":18}},
+"D09316002":{name:"NIDA FATHIMA",class:"3",subjects:{"Quran":45,"Hifl":45,Fiqh:43,"Aqeeda":36,"Tharikh":36,"Duroos":37,"Lisan":30}},
+"B05667018":{name:"SALIF",class:"4",subjects:{"Quran":26,"Hifl":18,Fiqh:18,"Aqeeda":22,"Tharikh":31.5,"Duroos":20,"Lisan":18}},
+"C09316004":{name:"MUHAMMED YASHIF",class:"4",subjects:{"Quran":26,"Hifl":38,Fiqh:34,"Aqeeda":39.5,"Tharikh":36.5,"Duroos":34.5,"Lisan":18}},
+"A09316006":{name:"JEWANA THAHLEEM",class:"4",subjects:{"Quran":29,"Hifl":18,Fiqh:22,"Aqeeda":25,"Tharikh":21,"Duroos":26,"Lisan":18}},
+"B09316001":{name:"ALFIYA K",class:"4",subjects:{"Quran":28,"Hifl":36,Fiqh:26,"Aqeeda":29,"Tharikh":32.5,"Duroos":23.5,"Lisan":21}},
+"B09316004":{name:"ASNA FATHIMA",class:"4",subjects:{"Quran":32,"Hifl":21,Fiqh:42,"Aqeeda":35,"Tharikh":35.5,"Duroos":34,"Lisan":21}},
+"B09316005":{name:"HUSNA FATHIMA",class:"4",subjects:{"Quran":37,"Hifl":37,Fiqh:39.5,"Aqeeda":41.5,"Tharikh":37,"Duroos":42.5,"Lisan":23}}
+
+};
+
+function fetchResult(){
+
+const regNo=document.getElementById("regNo").value;
+const selectedClass=document.getElementById("classSelect").value;
+const resultDiv=document.getElementById("result");
+
+if(studentResults[regNo] && studentResults[regNo].class===selectedClass){
+
+let student=studentResults[regNo];
+let subjects=student.subjects;
+
+let total=0;
+let fail=false;
+let rows="";
+
+for(let sub in subjects){
+
+let mark=subjects[sub];
+total+=mark;
+
+let colorClass="pass-subject";
+
+if(mark<18){
+colorClass="fail-subject";
+fail=true;
+}
+
+rows+=`<tr class="${colorClass}">
+<td>${sub}</td>
+<td>${mark}</td>
+</tr>`;
+}
+
+let finalResult=fail?"FAIL":"PASS";
+
+resultDiv.innerHTML=`
+
+<b>NAME:</b> ${student.name}<br>
+<b>CLASS:</b> ${student.class}
+
+<table>
+${rows}
+<tr>
+<td><b>TOTAL</b></td>
+<td><b>${total}</b></td>
+</tr>
+</table>
+
+<br>
+<b>FINAL RESULT:</b>
+<span class="${finalResult==='PASS'?'pass':'fail'}">${finalResult}</span>
+
+`;
+
+}else{
+
+resultDiv.innerHTML="<span class='fail'>NO RESULT FOUND</span>";
+
+}
+
+resultDiv.style.display="block";
+
+}
+
+</script>
+
+</body>
+</html>
